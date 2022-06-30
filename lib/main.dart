@@ -176,7 +176,8 @@ class _MyAppState extends State<MyApp> {
     });
 
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen(
+    if (Platform.isAndroid || Platform.isIOS) {
+        _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen(
       (String value) {
         handleSharedText(value, navigatorKey);
       },
@@ -184,13 +185,13 @@ class _MyAppState extends State<MyApp> {
         // print("ERROR in getTextStream: $err");
       },
     );
-
-    // For sharing or opening urls/text coming from outside the app while the app is closed
+        // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialText().then(
-      (String? value) {
-        if (value != null) handleSharedText(value, navigatorKey);
-      },
-    );
+              (String? value) {
+            if (value != null) handleSharedText(value, navigatorKey);
+          },
+        );
+    }
   }
 
   void setLocale(Locale value) {

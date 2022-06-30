@@ -3754,7 +3754,7 @@ class _SettingPageState extends State<SettingPage> {
                                           children: [
                                             IconButton(
                                               icon: const Icon(
-                                                MdiIcons.telegram,
+                                                Icons.telegram,
                                               ),
                                               iconSize: 40,
                                               tooltip: AppLocalizations.of(
@@ -3844,7 +3844,7 @@ class _SettingPageState extends State<SettingPage> {
                                           children: [
                                             IconButton(
                                               icon: const Icon(
-                                                MdiIcons.telegram,
+                                                Icons.telegram,
                                               ),
                                               iconSize: 40,
                                               tooltip: AppLocalizations.of(
@@ -3873,7 +3873,7 @@ class _SettingPageState extends State<SettingPage> {
                                           children: [
                                             IconButton(
                                               icon: const Icon(
-                                                MdiIcons.telegram,
+                                                Icons.telegram,
                                               ),
                                               iconSize: 40,
                                               tooltip: AppLocalizations.of(
