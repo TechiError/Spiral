@@ -46,6 +46,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -458,10 +459,15 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(5, 30, 5, 20),
                         child: Center(
-                          child: Text(
-                            AppLocalizations.of(context)!.madeBy,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 12),
+                          child: InkWell(
+                            onTap: () async {
+                              await launchUrlString("https://github.com/New-dev0/Spiral", mode: LaunchMode.externalApplication);
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!.madeBy,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 12),
+                            ),
                           ),
                         ),
                       ),

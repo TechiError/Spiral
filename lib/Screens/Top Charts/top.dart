@@ -17,6 +17,8 @@
  * Copyright (c) 2021-2022, Ankit Sangwan
  */
 
+import 'dart:convert';
+
 import 'package:blackhole/CustomWidgets/custom_physics.dart';
 import 'package:blackhole/CustomWidgets/empty_screen.dart';
 import 'package:blackhole/Helpers/countrycodes.dart';
@@ -26,14 +28,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:http/http.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 List items = [];
-List globalItems = [];
+dynamic globalItems = [];
 List cachedItems = [];
-List cachedGlobalItems = [];
+dynamic cachedGlobalItems = [];
 bool fetched = false;
 bool emptyRegional = false;
 bool emptyGlobal = false;
@@ -43,10 +47,10 @@ class TopCharts extends StatefulWidget {
   const TopCharts({Key? key, required this.pageController}) : super(key: key);
 
   @override
-  _TopChartsState createState() => _TopChartsState();
+  State<StatefulWidget> createState() => TopPageState();
 }
 
-class _TopChartsState extends State<TopCharts>
+/*ass TopChartsState extends State<TopCharts>
     with AutomaticKeepAliveClientMixin<TopCharts> {
   @override
   bool get wantKeepAlive => true;
@@ -55,181 +59,116 @@ class _TopChartsState extends State<TopCharts>
     super.build(context);
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool rotated = MediaQuery.of(context).size.height < screenWidth;
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: IconButton(
-                icon: const Icon(Icons.my_location_rounded),
-                onPressed: () async {
-                  await SpotifyCountry().changeCountry(context: context);
-                },
-              ),
-            ),
-          ],
-          bottom: TabBar(
-            indicatorSize: TabBarIndicatorSize.label,
-            tabs: [
-              Tab(
-                child: Text(
-                  AppLocalizations.of(context)!.local,
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.bodyText1!.color,
-                  ),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  AppLocalizations.of(context)!.global,
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.bodyText1!.color,
-                  ),
-                ),
-              ),
-            ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.spotifyTopCharts,
+          style: TextStyle(
+            fontSize: 18,
+            color: Theme.of(context).textTheme.bodyText1!.color,
           ),
-          title: Text(
-            AppLocalizations.of(context)!.spotifyTopCharts,
-            style: TextStyle(
-              fontSize: 18,
-              color: Theme.of(context).textTheme.bodyText1!.color,
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          leading: (rotated && screenWidth < 1050)
-              ? null
-              : Builder(
-                  builder: (BuildContext context) {
-                    return Transform.rotate(
-                      angle: 22 / 7 * 2,
-                      child: IconButton(
-                        color: Theme.of(context).iconTheme.color,
-                        icon: const Icon(
-                          Icons.horizontal_split_rounded,
-                        ),
-                        onPressed: () {
-                          Scaffold.of(cntxt).openDrawer();
-                        },
-                        tooltip: MaterialLocalizations.of(cntxt)
-                            .openAppDrawerTooltip,
-                      ),
-                    );
-                  },
-                ),
         ),
-        body: NotificationListener(
-          onNotification: (overscroll) {
-            if (overscroll is OverscrollNotification &&
-                overscroll.overscroll != 0 &&
-                overscroll.dragDetails != null) {
-              widget.pageController.animateToPage(
-                overscroll.overscroll < 0 ? 0 : 2,
-                curve: Curves.ease,
-                duration: const Duration(milliseconds: 150),
-              );
-            }
-            return true;
-          },
-          child: TabBarView(
-            physics: const CustomPhysics(),
-            children: [
-              ValueListenableBuilder(
-                valueListenable: Hive.box('settings').listenable(),
-                builder: (BuildContext context, Box box, Widget? widget) {
-                  return TopPage(
-                    region: CountryCodes
-                        .countryCodes[box.get('region', defaultValue: 'India')]
-                        .toString(),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        leading: (rotated && screenWidth < 1050)
+            ? null
+            : Builder(
+                builder: (BuildContext context) {
+                  return Transform.rotate(
+                    angle: 22 / 7 * 2,
+                    child: IconButton(
+                      color: Theme.of(context).iconTheme.color,
+                      icon: const Icon(
+                        Icons.horizontal_split_rounded,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(cntxt).openDrawer();
+                      },
+                      tooltip: MaterialLocalizations.of(cntxt)
+                          .openAppDrawerTooltip,
+                    ),
                   );
                 },
               ),
-              const TopPage(
-                region: 'global',
-              ),
-            ],
-          ),
+      ),
+      body: NotificationListener(
+        onNotification: (overscroll) {
+          if (overscroll is OverscrollNotification &&
+              overscroll.overscroll != 0 &&
+              overscroll.dragDetails != null) {
+            widget.pageController.animateToPage(
+              overscroll.overscroll < 0 ? 0 : 2,
+              curve: Curves.ease,
+              duration: const Duration(milliseconds: 150),
+            );
+          }
+          return true;
+        },
+        child: Column(
+         // physics: const CustomPhysics(),
+          children: [
+            ValueListenableBuilder(
+              valueListenable: Hive.box('settings').listenable(),
+              builder: (BuildContext context, Box box, Widget? widget) {
+                return TopPage(
+                  region: CountryCodes
+                      .countryCodes[box.get('region', defaultValue: 'India')]
+                      .toString(),
+                );
+              },
+            ),
+            const TopPage(
+              region: 'global',
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-Future<List> scrapData(String region) async {
+*/
+Future<dynamic> scrapData() async {
   // print('starting expensive operation');
+  List result = [];
   final HtmlUnescape unescape = HtmlUnescape();
-  const String authority = 'www.spotifycharts.com';
-  final String unencodedPath = '/regional/$region/daily/latest/';
-  final Response res = await get(Uri.https(authority, unencodedPath));
-
+  const String authority =
+      'https://charts-spotify-com-service.spotify.com/public/v0/charts';
+  final Response res = await get(Uri.parse(authority));
   if (res.statusCode != 200) return List.empty();
-  final List result = RegExp(
-    r'\<td class=\"chart-table-image\"\>\n[ ]*?\<a href=\"https:\/\/open\.spotify\.com\/track\/(.*?)\" >\n[ ]*?\<img src=\"(https:\/\/i\.scdn\.co\/image\/.*?)\"\>\n[ ]*?\<\/a\>\n[ ]*?<\/td\>\n[ ]*?<td class=\"chart-table-position\">([0-9]*?)<\/td>\n[ ]*?<td class=\"chart-table-trend\">[.|\n| ]*<.*\n[ ]*<.*\n[ ]*<.*\n[ ]*<.*\n[ ]*<td class=\"chart-table-track\">\n[ ]*?<strong>(.*?)<\/strong>\n[ ]*?<span>by (.*?)<\/span>\n[ ]*?<\/td>\n[ ]*?<td class="chart-table-streams">(.*?)<\/td>',
-  ).allMatches(res.body).map((m) {
-    return {
-      'id': m[1],
-      'image': m[2],
-      'position': m[3],
-      'title': unescape.convert(m[4]!),
+  dynamic data = jsonDecode(res.body)["chartEntryViewResponses"][0]["entries"];
+  for (int i = 0; i < (data as List).length; i++) {
+    dynamic m = data[i];
+    dynamic meta = m["trackMetadata"];
+    result.add({
+      'id': "",
+      'image': meta["displayImageUri"],
+      'position': m["chartEntryData"]["currentRank"],
+      'title': meta["trackName"],
       'album': '',
-      'artist': unescape.convert(m[5]!),
-      'streams': m[6],
-      'region': region,
-    };
-  }).toList();
-  print(result);
+      'artist': meta["artists"][0]["name"],
+      'streams': "",
+      'region': "",
+    });
+  }
   // print('finished expensive operation');
   return result;
 }
 
-class TopPage extends StatefulWidget {
-  final String region;
-  const TopPage({Key? key, required this.region}) : super(key: key);
-  @override
-  _TopPageState createState() => _TopPageState();
-}
-
-class _TopPageState extends State<TopPage>
-    with AutomaticKeepAliveClientMixin<TopPage> {
-  Future<void> getData(String region) async {
+class TopPageState extends State<TopCharts> {
+  Future<void> getData() async {
     fetched = true;
-    final List temp = await compute(scrapData, region);
+    final dynamic temp = await scrapData();
     setState(() {
-      if (region == 'global') {
-        globalItems = temp;
-        if (globalItems.isNotEmpty) {
-          cachedGlobalItems = globalItems;
-          Hive.box('cache').put(region, globalItems);
-        }
-        emptyGlobal = globalItems.isEmpty && cachedGlobalItems.isEmpty;
-      } else {
-        items = temp;
-        if (items.isNotEmpty) {
-          cachedItems = items;
-          Hive.box('cache').put(region, items);
-        }
-        emptyRegional = items.isEmpty && cachedItems.isEmpty;
+      bool empty = (globalItems as List).isEmpty;
+      globalItems = temp;
+      if (!empty) {
+        cachedGlobalItems = globalItems;
+        emptyGlobal = empty && (cachedGlobalItems as List).isEmpty;
       }
     });
-  }
-
-  Future<void> getCachedData(String region) async {
-    fetched = true;
-    if (region != 'global') {
-      cachedItems =
-          await Hive.box('cache').get(region, defaultValue: []) as List;
-    }
-    if (region == 'global') {
-      cachedGlobalItems =
-          await Hive.box('cache').get(region, defaultValue: []) as List;
-    }
-    setState(() {});
   }
 
   @override
@@ -238,109 +177,124 @@ class _TopPageState extends State<TopPage>
   @override
   void initState() {
     super.initState();
-    if (widget.region == 'global' && globalItems.isEmpty) {
-      getCachedData(widget.region);
-      getData(widget.region);
-    } else {
-      if (items.isEmpty) {
-        getCachedData(widget.region);
-        getData(widget.region);
-      }
-    }
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final bool isGlobal = widget.region == 'global';
     if (!fetched) {
-      getCachedData(widget.region);
-      getData(widget.region);
+      //  getCachedData();
+      getData();
     }
-    final List showList = isGlobal ? cachedGlobalItems : cachedItems;
-    final bool isListEmpty = isGlobal ? emptyGlobal : emptyRegional;
-    return Column(
-      children: [
-        if (showList.length <= 50)
-          Expanded(
-            child: isListEmpty
-                ? emptyScreen(
-                    context,
-                    0,
-                    ':( ',
-                    100,
-                    'ERROR',
-                    60,
-                    'Service Unavailable',
-                    20,
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      CircularProgressIndicator(),
-                    ],
-                  ),
-          )
-        else
-          Expanded(
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: showList.length,
-              itemExtent: 70.0,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(7.0),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Stack(
-                      children: [
-                        const Image(
-                          image: AssetImage('assets/cover.jpg'),
-                        ),
-                        if (showList[index]['image'] != '')
-                          CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl: showList[index]['image'].toString(),
-                            errorWidget: (context, _, __) => const Image(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/cover.jpg'),
-                            ),
-                            placeholder: (context, url) => const Image(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/cover.jpg'),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  title: Text(
-                    showList[index]['position'] == null
-                        ? '${showList[index]["title"]}'
-                        : '${showList[index]['position']}. ${showList[index]["title"]}',
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    '${showList[index]['artist']}',
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SearchPage(
-                          query: showList[index]['title'].toString(),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool rotated = MediaQuery.of(context).size.height < screenWidth;
+
+    final dynamic showList = globalItems;
+    final bool isListEmpty = (cachedGlobalItems as List).isEmpty;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.spotifyTopCharts,
+          style: TextStyle(
+            fontSize: 18,
+            color: Theme.of(context).textTheme.bodyText1!.color,
           ),
-      ],
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        // TODO: FIX Leading
+        /*leading: (rotated && screenWidth < 1050)
+            ? null
+            : Builder(
+                builder: (BuildContext context) {
+                  return Transform.rotate(
+                    angle: 22 / 7 * 2,
+                    child: IconButton(
+                      color: Theme.of(context).iconTheme.color,
+                      icon: const Icon(
+                        Icons.horizontal_split_rounded,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      tooltip: MaterialLocalizations.of(context)
+                          .openAppDrawerTooltip,
+                    ),
+                  );
+                },
+              ),*/
+      ),
+      body: Column(
+        children: [
+          if ((showList as List).length == 0)
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemCount: showList.length,
+                itemExtent: 70.0,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Stack(
+                        children: [
+                          const Image(
+                            image: AssetImage('assets/cover.jpg'),
+                          ),
+                          if (showList[index]['image'] != '')
+                            CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: showList[index]['image'].toString(),
+                              errorWidget: (context, _, __) => const Image(
+                                fit: BoxFit.cover,
+                                image: AssetImage('assets/cover.jpg'),
+                              ),
+                              placeholder: (context, url) => const Image(
+                                fit: BoxFit.cover,
+                                image: AssetImage('assets/cover.jpg'),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    title: Text(
+                      showList[index]['position'] == null
+                          ? '${showList[index]["title"]}'
+                          : '${showList[index]['position']}. ${showList[index]["title"]}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      '${showList[index]['artist']}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchPage(
+                            query: showList[index]['title'].toString(),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
