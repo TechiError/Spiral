@@ -509,74 +509,77 @@ class _DownloadsState extends State<Downloads>
                           ),
                         ],
                       ),
-                floatingActionButton: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(100.0),
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      if (_songs.isNotEmpty) {
-                        final tempList = _songs.toList();
-                        tempList.shuffle();
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) => PlayScreen(
-                              songsList: tempList,
-                              index: 0,
-                              offline: true,
-                              fromMiniplayer: false,
-                              fromDownloads: true,
-                              recommend: false,
+                floatingActionButton: Visibility(
+                  visible: _songs.isNotEmpty,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_songs.isNotEmpty) {
+                          final tempList = _songs.toList();
+                          tempList.shuffle();
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (_, __, ___) => PlayScreen(
+                                songsList: tempList,
+                                index: 0,
+                                offline: true,
+                                fromMiniplayer: false,
+                                fromDownloads: true,
+                                recommend: false,
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: AnimatedSize(
-                        duration: const Duration(milliseconds: 200),
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: _showShuffle,
-                          builder: (
-                            BuildContext context,
-                            bool _showFullShuffle,
-                            Widget? child,
-                          ) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.shuffle_rounded,
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  size: 24.0,
-                                ),
-                                if (_showFullShuffle)
-                                  const SizedBox(width: 5.0),
-                                if (_showFullShuffle)
-                                  Text(
-                                    AppLocalizations.of(context)!.shuffle,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.0,
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                    textAlign: TextAlign.center,
+                          );
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: AnimatedSize(
+                          duration: const Duration(milliseconds: 200),
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: _showShuffle,
+                            builder: (
+                              BuildContext context,
+                              bool _showFullShuffle,
+                              Widget? child,
+                            ) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.shuffle_sharp,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    size: 24.0,
                                   ),
-                                if (_showFullShuffle)
-                                  const SizedBox(width: 2.5),
-                              ],
-                            );
-                          },
+                                  if (_showFullShuffle)
+                                    const SizedBox(width: 5.0),
+                                  if (_showFullShuffle)
+                                    Text(
+                                      AppLocalizations.of(context)!.shuffle,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  if (_showFullShuffle)
+                                    const SizedBox(width: 2.5),
+                                ],
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
