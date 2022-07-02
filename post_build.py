@@ -60,5 +60,5 @@ async def main():
 
 asyncio.run(main())
 
-with open(".last_version") as f:
+with open(".last_version", "w") as f:
     f.write(MetaJson["version"])
