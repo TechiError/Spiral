@@ -58,4 +58,12 @@ jobs:
       - name: Post to Channel if required
         run: |
          pip3 install -r requirements.txt
-         python post_build.py
+         python post_build.py 
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        continue-on-error: true
+        with:
+          commit_message: 'Update App Version'
+          repository: .
+          commit_user_name: New-dev0
+          commit_user_email: Newdev0@outlook.com
+          commit_author: Devesh Pal <Newdev0@outlook.com>
