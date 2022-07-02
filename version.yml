@@ -1,0 +1,7 @@
+version: 1.16.0
+thumb: assets/icon.png
+changelog:
+tags:
+  - test
+  - build
+images:

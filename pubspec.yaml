@@ -34,7 +34,7 @@ dependencies:
   html_unescape: ^2.0.0
   just_audio: ^0.9.24
   # logging: ^1.0.1
-  just_audio_windows: ^0.1.0
+  just_audio_mpv: ^0.1.4
   marquee: ^2.2.3
   material_design_icons_flutter: ^5.0.6595
   on_audio_query: ^2.6.1

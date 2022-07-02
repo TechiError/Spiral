@@ -19,8 +19,6 @@
 
 import 'package:process_run/shell.dart';
 import 'dart:convert';
-// import 'dart:io' as iom;
-
 import 'package:http/http.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -338,10 +336,6 @@ class YouTubeServices {
 
   Future<List<Video>> fetchSearchResults(String query) async {
     final VideoSearchList searchResults = await yt.search.search(query);
-
-   // var a = await iom.Process.run("yt-dlp", [], workingDirectory: "assets", runInShell: true);
- //   print(a.outText);
-   // print(await shell.run("./yt-dlp"));
 
     // Uri link = Uri.https(searchAuthority, searchPath, {"search_query": query});
     // final Response response = await get(link);
