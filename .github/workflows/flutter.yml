@@ -58,7 +58,7 @@ jobs:
           python-version: 3.9
       - name: Post to Channel if required
         run: |
-         pip3 install -r requirements.txt
+         pip3 install telethon pyyaml
          python post_build.py 
       - uses: stefanzweifel/git-auto-commit-action@v4
         continue-on-error: true
