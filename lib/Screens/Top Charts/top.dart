@@ -66,8 +66,9 @@ class _TopChartsState extends State<TopCharts>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: IconButton(
-                icon: Icon(Icons.my_location_rounded,
-                color: Theme.of(context).iconTheme.color,
+                icon: Icon(
+                  Icons.my_location_rounded,
+                  color: Theme.of(context).iconTheme.color,
                 ),
                 onPressed: () async {
                   await SpotifyCountry().changeCountry(context: context);
@@ -110,23 +111,23 @@ class _TopChartsState extends State<TopCharts>
           leading: (rotated && screenWidth < 1050)
               ? null
               : Builder(
-            builder: (BuildContext context) {
-              return Transform.rotate(
-                angle: 22 / 7 * 2,
-                child: IconButton(
-                  color: Theme.of(context).iconTheme.color,
-                  icon: const Icon(
-                    Icons.horizontal_split_rounded,
-                  ),
-                  onPressed: () {
-                    Scaffold.of(cntxt).openDrawer();
+                  builder: (BuildContext context) {
+                    return Transform.rotate(
+                      angle: 22 / 7 * 2,
+                      child: IconButton(
+                        color: Theme.of(context).iconTheme.color,
+                        icon: const Icon(
+                          Icons.horizontal_split_rounded,
+                        ),
+                        onPressed: () {
+                          Scaffold.of(cntxt).openDrawer();
+                        },
+                        tooltip: MaterialLocalizations.of(cntxt)
+                            .openAppDrawerTooltip,
+                      ),
+                    );
                   },
-                  tooltip: MaterialLocalizations.of(cntxt)
-                      .openAppDrawerTooltip,
                 ),
-              );
-            },
-          ),
         ),
         body: NotificationListener(
           onNotification: (overscroll) {
@@ -165,36 +166,36 @@ class _TopChartsState extends State<TopCharts>
   }
 }
 
-Future<List> getGlobal()  async {
-    List result = [];
-    const String authority =
-        'https://charts-spotify-com-service.spotify.com/public/v0/charts';
-    final Response res = await get(Uri.parse(authority));
-    if (res.statusCode != 200) return List.empty();
-    dynamic data = jsonDecode(res.body)["chartEntryViewResponses"][0]["entries"];
-    for (int i = 0; i < (data as List).length; i++) {
-      dynamic m = data[i];
-      dynamic meta = m["trackMetadata"];
-      result.add({
-        'id': "",
-        'image': meta["displayImageUri"],
-        'position': m["chartEntryData"]["currentRank"],
-        'title': meta["trackName"],
-        'album': '',
-        'artist': meta["artists"][0]["name"],
-        'streams': "",
-        'region': "",
-      });
-    }
-    // print('finished expensive operation');
-    return result;
+Future<List> getGlobal() async {
+  List result = [];
+  const String authority =
+      'https://charts-spotify-com-service.spotify.com/public/v0/charts';
+  final Response res = await get(Uri.parse(authority));
+  if (res.statusCode != 200) return List.empty();
+  dynamic data = jsonDecode(res.body)["chartEntryViewResponses"][0]["entries"];
+  for (int i = 0; i < (data as List).length; i++) {
+    dynamic m = data[i];
+    dynamic meta = m["trackMetadata"];
+    result.add({
+      'id': "",
+      'image': meta["displayImageUri"],
+      'position': m["chartEntryData"]["currentRank"],
+      'title': meta["trackName"],
+      'album': '',
+      'artist': meta["artists"][0]["name"],
+      'streams': "",
+      'region': "",
+    });
   }
-
+  // print('finished expensive operation');
+  return result;
+}
 
 Future<List> scrapData(String region) async {
   if (region == "global") {
     return await getGlobal();
-  };
+  }
+  ;
   final HtmlUnescape unescape = HtmlUnescape();
   String authority = 'https://spotifycharts-rosy.vercel.app/?local=${region}';
   final Response res = await post(Uri.parse(authority));
@@ -254,11 +255,11 @@ class _TopPageState extends State<TopPage>
     fetched = true;
     if (region != 'global') {
       cachedItems =
-      await Hive.box('cache').get(region, defaultValue: []) as List;
+          await Hive.box('cache').get(region, defaultValue: []) as List;
     }
     if (region == 'global') {
       cachedGlobalItems =
-      await Hive.box('cache').get(region, defaultValue: []) as List;
+          await Hive.box('cache').get(region, defaultValue: []) as List;
     }
     setState(() {});
   }
@@ -296,21 +297,21 @@ class _TopPageState extends State<TopPage>
           Expanded(
             child: isListEmpty
                 ? emptyScreen(
-              context,
-              0,
-              ':( ',
-              100,
-              'Local',
-              60,
-              'Charts are Under Fixes.',
-              20,
-            )
+                    context,
+                    0,
+                    ':( ',
+                    100,
+                    'Local',
+                    60,
+                    'Charts are Under Fixes.',
+                    20,
+                  )
                 : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-              ],
-            ),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(),
+                    ],
+                  ),
           )
         else
           Expanded(

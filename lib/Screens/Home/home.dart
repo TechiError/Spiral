@@ -461,7 +461,9 @@ class _HomePageState extends State<HomePage> {
                         child: Center(
                           child: InkWell(
                             onTap: () async {
-                              await launchUrlString("https://github.com/New-dev0/Spiral", mode: LaunchMode.externalApplication);
+                              await launchUrlString(
+                                  "https://github.com/New-dev0/Spiral",
+                                  mode: LaunchMode.externalApplication);
                             },
                             child: Text(
                               AppLocalizations.of(context)!.madeBy,

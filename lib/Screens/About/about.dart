@@ -100,8 +100,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         clipBehavior: Clip.antiAlias,
                         child: const SizedBox(
                           width: 150,
-                          child:
-                              Image(image: AssetImage('assets/icon.png')),
+                          child: Image(image: AssetImage('assets/icon.png')),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -187,7 +186,8 @@ class _AboutScreenState extends State<AboutScreen> {
                         onPressed: () {
                           const String upiUrl =
                               'upi://pay?pa=ankit.sangwan.5688@oksbi&pn=BlackHole&mc=5732&aid=uGICAgIDn98OpSw&tr=BCR2DN6T37O6DB3Q';
-                          launchUrl(Uri.parse(upiUrl), mode: LaunchMode.externalNonBrowserApplication);
+                          launchUrl(Uri.parse(upiUrl),
+                              mode: LaunchMode.externalNonBrowserApplication);
                         },
                         onLongPress: () {
                           copyToClipboard(

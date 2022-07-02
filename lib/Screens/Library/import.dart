@@ -150,7 +150,8 @@ Future<void> importFile(
   settingsBox.put('playlistNames', newPlaylistNames);
 }
 
-void importSpotify(BuildContext context, List playlistNames, Box settingsBox) async {
+void importSpotify(
+    BuildContext context, List playlistNames, Box settingsBox) async {
   String code;
   launchUrl(
     Uri.parse(
