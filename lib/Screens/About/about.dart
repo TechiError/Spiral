@@ -187,7 +187,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           const String upiUrl =
                               'upi://pay?pa=ankit.sangwan.5688@oksbi&pn=BlackHole&mc=5732&aid=uGICAgIDn98OpSw&tr=BCR2DN6T37O6DB3Q';
                           launchUrl(Uri.parse(upiUrl),
-                              mode: LaunchMode.externalNonBrowserApplication);
+                              mode: LaunchMode.externalNonBrowserApplication,);
                         },
                         onLongPress: () {
                           copyToClipboard(

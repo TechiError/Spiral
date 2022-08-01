@@ -150,15 +150,15 @@ Future<void> importFile(
   settingsBox.put('playlistNames', newPlaylistNames);
 }
 
-void importSpotify(
-    BuildContext context, List playlistNames, Box settingsBox) async {
+Future<void> importSpotify(
+    BuildContext context, List playlistNames, Box settingsBox,) async {
   String code;
   launchUrl(
     Uri.parse(
       SpotifyApi().requestAuthorization(),
     ),
   );
-  String? link = await AppLinks().getLatestAppLinkString();
+  final String? link = await AppLinks().getLatestAppLinkString();
   closeInAppWebView();
   if (link != null && link.contains('code=')) {
     code = link.split('code=')[1];

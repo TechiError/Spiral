@@ -167,24 +167,24 @@ class _TopChartsState extends State<TopCharts>
 }
 
 Future<List> getGlobal() async {
-  List result = [];
+  final List result = [];
   const String authority =
       'https://charts-spotify-com-service.spotify.com/public/v0/charts';
   final Response res = await get(Uri.parse(authority));
   if (res.statusCode != 200) return List.empty();
-  dynamic data = jsonDecode(res.body)["chartEntryViewResponses"][0]["entries"];
+  final dynamic data = jsonDecode(res.body)['chartEntryViewResponses'][0]['entries'];
   for (int i = 0; i < (data as List).length; i++) {
-    dynamic m = data[i];
-    dynamic meta = m["trackMetadata"];
+    final dynamic m = data[i];
+    final dynamic meta = m['trackMetadata'];
     result.add({
-      'id': "",
-      'image': meta["displayImageUri"],
-      'position': m["chartEntryData"]["currentRank"],
-      'title': meta["trackName"],
+      'id': '',
+      'image': meta['displayImageUri'],
+      'position': m['chartEntryData']['currentRank'],
+      'title': meta['trackName'],
       'album': '',
-      'artist': meta["artists"][0]["name"],
-      'streams': "",
-      'region': "",
+      'artist': meta['artists'][0]['name'],
+      'streams': '',
+      'region': '',
     });
   }
   // print('finished expensive operation');
@@ -192,12 +192,12 @@ Future<List> getGlobal() async {
 }
 
 Future<List> scrapData(String region) async {
-  if (region == "global") {
+  if (region == 'global') {
+    // ignore: unnecessary_await_in_return
     return await getGlobal();
   }
-  ;
   final HtmlUnescape unescape = HtmlUnescape();
-  String authority = 'https://spotifycharts-rosy.vercel.app/?local=${region}';
+  final String authority = 'https://spotifycharts-rosy.vercel.app/?local=$region';
   final Response res = await post(Uri.parse(authority));
 
   if (res.statusCode != 200) return List.empty();
@@ -293,7 +293,7 @@ class _TopPageState extends State<TopPage>
     final bool isListEmpty = isGlobal ? emptyGlobal : emptyRegional;
     return Column(
       children: [
-        if (showList.length == 0)
+        if (showList.isEmpty)
           Expanded(
             child: isListEmpty
                 ? emptyScreen(

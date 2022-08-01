@@ -17,7 +17,6 @@
  * Copyright (c) 2021-2022, Ankit Sangwan
  */
 
-import 'package:process_run/shell.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
