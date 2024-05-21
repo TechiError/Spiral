@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -35,7 +36,7 @@ jobs:
       - run: flutter pub get
 
       # Check for any formatting issues in the code.
-      - run: flutter format --fix lib
+      - run: dart format --fix lib
 
       # Statically analyze the Dart code for any errors.
      # - run: flutter analyze .
